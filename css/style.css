@@ -1,0 +1,73 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+#booksList {
+  height: auto;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background-color: rgb(194, 154, 67);
+}
+
+
+.card {
+  display: flex;
+  flex-direction: column;
+  margin: 1vw;
+  padding: 10px;
+  height: 45vh;
+  width: 15vw;
+  background-color: rgb(247, 247, 247);
+  box-shadow: 10px 5px 10px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 25px;
+  overflow-y: auto;
+  /*permet de définir les bords de la carte*/
+
+
+}
+
+img {
+  max-height: 40%;
+  object-fit: fill;
+}
+
+.booktitle {
+
+  max-height: 30%;
+  min-height: auto;
+  font-size: 1.3em;
+
+}
+
+.infobulle {
+  position: relative;
+  /* les .infobulle deviennent référents */
+  cursor: help;
+}
+
+/* on génère un élément :after lors du survol et du focus :*/
+.infobulle:hover::after,
+.infobulle:focus::after {
+  content: attr(aria-label);
+  /* on affiche aria-label */
+  position: absolute;
+  top: -2.4em;
+  left: 50%;
+  transform: translateX(-50%);
+  /* on centre horizontalement  */
+  z-index: 1;
+  /* pour s'afficher au dessus des éléments en position relative */
+  white-space: nowrap;
+  /* on interdit le retour à la ligne */
+}
+
+.category {
+  margin-top: 5px;
+  max-height: 30%;
+  min-height: auto;
+  font-size: 1em;
+
+}
