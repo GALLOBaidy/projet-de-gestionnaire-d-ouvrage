@@ -14,8 +14,9 @@ let listAuthors = document.getElementById("listAuthors");
 let listCategories = document.getElementById("listCategories");
 let listBooks = document.getElementById("booksList");
 
-//Quand on change sur la liste on appelle la fonction chargeByAuthor
+//Quand on change sur la liste on appelle la fonction chargeByAuthor/chargeByCategory
 listAuthors.addEventListener("change", chargeByAuthor);
+listCategories.addEventListener("change", chargeByCategory);
 
 // On créé l'écouteur d'evenements sur le load de notre page
 window.addEventListener("DOMContentLoaded", jsonOnLoad);
@@ -42,18 +43,24 @@ function createBooks(_books) {
     for (let x = 0; x < book.authors.length; x++) {
       //On  crée une variable qui nous renverra tous les auteurs (sans doublons)
       let author = book.authors[x];
-
       // Je vais vérifier que l'auteur n'est pas dans ma liste des auteurs grâce à la fonction native indexOf()
       if (authorsList.indexOf(author) == -1) {
         //S'il n'y est pas je l'ajoute dans ma liste d'auteurs
         authorsList.push(author);
       }
+      // // Je ferais la même chose pour la liste des catégories
+      //On crée une boucle pour avoir la liste des catégories
+      for (y = 0; y < book.categories.length; y++) {
+        let categorie = book.categories[y];
+        if (categoriesList.indexOf(categorie) == -1) {
+          categoriesList.push(categorie);
+        }
+      }
     }
-
-    // Je ferais la même chose pour la liste des catégories
   }
   //pour que la liste soit dans l'ordre alphabéthique
   authorsList.sort();
+  categoriesList.sort()
   //on crée une boucle pour afficher la liste de nos auteurs
   for (let i = 0; i < authorsList.length; i++) {
     //On crée un balise html (option pour une liste déroulante) pour pouvoir séléctionner un élément dans notre liste
@@ -63,6 +70,14 @@ function createBooks(_books) {
     option.innerText = authorsList[i];
     //Notre nouvelle balise sera un enfant de notre balise select déjà présent dans le html
     listAuthors.appendChild(option);
+  }
+
+  //On crée une boucle pour afficher la liste de nos catégories
+  for (let j = 0; j < categoriesList.length; j++) {
+    let option = document.createElement("option");
+    option.value = categoriesList[j];
+    option.innerText = categoriesList[j];
+    listCategories.appendChild(option);
   }
 
   //On appelle notre fonction pour pouvoir afficher notre liste de livre
@@ -155,32 +170,37 @@ function showBooks(_books) {
       datePubli = "Pas de date de pblication";
     }
 
+    //On crée une variable pour ajouter l'isbn de chaque livre
+    let isbn;
+    isbn = _books[y].isbn
+
+
     //on ajoute tous nos éléments dans le html
     book.innerHTML =
       "<img src= '" +
       _books[y].thumbnailUrl +
       "'/>" +
       //le <span> permet d'afficher une infobulle dès que le pointeur de la souris est sur le titre
-      "<h1 class= 'booktitle'><span class = 'infobulle' title ='" +
+      "<h2 class= 'booktitle'><span class = 'infobulle' title ='" +
       _books[y].title +
       "'>" +
       titre +
-      "</span></h1>" +
-      "<h4>" +
+      "</span></h2>" +
+      "<p> Date de publication : " +
       datePubli +
-      "</h4>" +
+      "</p>" +
       //le <span> permet d'afficher une infobulle dès que le pointeur de la souris est sur le shortDescription
-      "<h5> <span class = 'infobulle' title ='" +
+      "<p> <span class = 'infobulle' title ='" +
       description +
       "'>" +
       shortDescription +
-      "</span></h5>";
+      "</span></p>" +
+      "<p> Isbn : " + isbn + "</p>";
 
     //On ajoute la balise crée ("div") dans notre liste de livre ("bookList")
     listBooks.appendChild(book);
   }
 }
-
 // Fonction appelée lors du changement d'auteur dans la liste déroulante
 function chargeByAuthor() {
   //On crée une variable qui nous renverra le nom de l'auteur séléctionné grâce au "selectedIndex" (chaque auteur devient une option de la liste déroulante)
@@ -192,7 +212,7 @@ function chargeByAuthor() {
 
   //Si la séléction est vide on affiche la liste des livres
   if (strAuthors == "") {
-    showBooks(bookList);
+    return showBooks(bookList);
   } else {
     //On crée une boucle sur les livres pour filtrer par auteur
     for (let x = 0; x < bookList.length; x++) {
@@ -204,11 +224,34 @@ function chargeByAuthor() {
       }
     }
   }
-
   //Trie la liste des livres filtrés et les affiche
   bookByAutors.sort();
   showBooks(bookByAutors);
 }
 
+
 // Fonction appelée lors du changement de catégorie dans la liste déroulante
-function chargeByCategory() {}
+function chargeByCategory() {
+  //On crée une variable qui nous renverra la catégorie séléctionné grâce au "selectedIndex" (chaque catégorie devient une option de la liste déroulante)
+  let strCategories = listCategories.options[listCategories.selectedIndex].text;
+  console.log(strCategories);
+  //On crée une nouvelle liste pour les livres filtrés par catégories
+  let bookCategorie = new Array();
+  //si la séléction est vide on affiche la liste des livres
+  if (strCategories == "") {
+    return showBooks(bookList);
+  } else {
+    //On crée une boucle pour filtrer les livres par catégories
+    for (y = 0; y < bookList.length; y++) {
+      let categorie = bookList[y];
+
+      //Ajoute le livre si la catégorie correspond
+      if (categorie.categories.indexOf(strCategories) != -1) {
+        bookCategorie.push(categorie);
+      }
+    }
+  }
+  //Trie de la liste par ordre alphabétique et les affiche
+  bookCategorie.sort();
+  showBooks(bookCategorie);
+}
