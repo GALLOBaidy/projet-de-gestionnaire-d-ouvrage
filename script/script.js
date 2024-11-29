@@ -229,7 +229,6 @@ function chargeByAuthor() {
   showBooks(bookByAutors);
 }
 
-
 // Fonction appelée lors du changement de catégorie dans la liste déroulante
 function chargeByCategory() {
   //On crée une variable qui nous renverra la catégorie séléctionné grâce au "selectedIndex" (chaque catégorie devient une option de la liste déroulante)
